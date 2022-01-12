@@ -17,19 +17,34 @@ function query($ambil) {
 
 function cari($kode) {
     global $conn;
-    $ambil = mysqli_query($conn, "SELECT id FROM kode_voucher WHERE kode = '$kode' ");
-    $countRow = mysqli_num_rows($ambil);
-    $dataId = query("SELECT id FROM kode_voucher WHERE kode = '$kode'");
-    if($countRow > 0) {
-        return $dataId[0]['id'];
-    } else {
-        return 0;
+    $dataFound = mysqli_query($conn, "SELECT * FROM kode_voucher WHERE kode = '$kode' ");
+    $countRow = mysqli_num_rows($dataFound);
+    if($countRow != 0) {
+        $ambil = query("SELECT * FROM kode_voucher WHERE kode = '$kode' ");
+        if($ambil[0]['kode'] == $kode) {
+            return $ambil[0]['id'];
+        } else {
+            return 0;
+        }
     }
 }
 
-function hapus($id) {
+// function hapus($id) {
+// 	global $conn;
+// 	$result = mysqli_query($conn,"DELETE FROM kode_voucher WHERE id = $id");
+// 	return mysqli_affected_rows($conn);
+// }
+
+function ubah($data) {
+
 	global $conn;
-	$result = mysqli_query($conn,"DELETE FROM kode_voucher WHERE id = $id");
+	$id = $data["id"];
+    $date = date("Y-m-d");
+
+	//ambil data
+	$insert = "UPDATE kode_voucher SET stats = 'used', date_used = '$date' WHERE id = $id";
+	$result = mysqli_query($conn,$insert);
+
 	return mysqli_affected_rows($conn);
 }
 
